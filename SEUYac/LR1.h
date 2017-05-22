@@ -132,7 +132,7 @@ class LR1
 {
 public:
 	LR1(producer);
-	void createLR1();
+	vector<LrState> createLR1();
 	vector<LrState> AllStates;
 	LrState createNewState(int,string);//被转换的State的序号，规则数，边
 	vector<producer>expressions;

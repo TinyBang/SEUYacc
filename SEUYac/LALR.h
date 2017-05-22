@@ -5,6 +5,7 @@ class LALR {
 public:
 	LALR(vector<LrState>);
 	vector<LrState>AllState;
+	vector<vector<int>>StateSet;
 };
 
 #endif // !LALR_H

@@ -1,0 +1,17 @@
+﻿  LALR.cpp
+f:\文档\github\seuyac\seuyac\lr1.h(26): warning C4018: “<”: 有符号/无符号不匹配
+f:\文档\github\seuyac\seuyac\lr1.h(28): warning C4018: “<”: 有符号/无符号不匹配
+f:\文档\github\seuyac\seuyac\lr1.h(54): warning C4018: “<”: 有符号/无符号不匹配
+f:\文档\github\seuyac\seuyac\lr1.h(56): warning C4018: “<”: 有符号/无符号不匹配
+f:\文档\github\seuyac\seuyac\lr1.h(110): warning C4018: “<”: 有符号/无符号不匹配
+f:\文档\github\seuyac\seuyac\lr1.h(112): warning C4018: “<”: 有符号/无符号不匹配
+f:\文档\github\seuyac\seuyac\lalr.cpp(6): warning C4018: “<”: 有符号/无符号不匹配
+f:\文档\github\seuyac\seuyac\lalr.cpp(10): warning C4018: “<”: 有符号/无符号不匹配
+f:\文档\github\seuyac\seuyac\lalr.cpp(18): warning C4018: “<”: 有符号/无符号不匹配
+f:\文档\github\seuyac\seuyac\lalr.cpp(19): warning C4018: “<”: 有符号/无符号不匹配
+f:\文档\github\seuyac\seuyac\lalr.cpp(20): warning C4018: “<”: 有符号/无符号不匹配
+f:\文档\github\seuyac\seuyac\lalr.cpp(21): warning C4018: “<”: 有符号/无符号不匹配
+f:\文档\github\seuyac\seuyac\lalr.cpp(47): warning C4018: “<”: 有符号/无符号不匹配
+f:\文档\github\seuyac\seuyac\lalr.cpp(49): warning C4018: “<”: 有符号/无符号不匹配
+  SEUYac.vcxproj -> F:\文档\GitHub\SEUYac\Debug\SEUYac.exe
+  SEUYac.vcxproj -> F:\文档\GitHub\SEUYac\Debug\SEUYac.pdb (Full PDB)

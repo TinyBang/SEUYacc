@@ -1,4 +1,5 @@
 #include"LR1.h"
+#include"LALR.h"
 using namespace std;
 //vector<string> terminals;
 vector<producer>expressions;
@@ -400,7 +401,7 @@ LrState LR1::createNewState(int transferform, string edge) {
 	tmpState = adjust(tmpState);
 	return tmpState;
 }
-void LR1::createLR1() {
+vector<LrState> LR1::createLR1() {
 	for (int i = 0; i < AllStates.size(); i++) {
 		for (int j = 0; j < AllStates[i].outedge.size(); j++) {
 			LrState tmpState;
@@ -415,6 +416,7 @@ void LR1::createLR1() {
 			}
 		}
 	}
+	return AllStates;
 }
 int LR1::ifStateExistant(LrState newState) {
 	for (int i = 0; i < AllStates.size(); i++) {
@@ -441,5 +443,5 @@ int main()
 	readFile();
 	First("(T");
 	LR1 newlr1(pro[0]);
-	newlr1.createLR1();
+	LALR newlalr(newlr1.createLR1());
 }
