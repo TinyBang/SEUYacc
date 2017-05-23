@@ -234,11 +234,11 @@ M:
 
 LR1::LR1(producer pro0)
 {
-	LrState I0;
-		I0.Number = 0;
-		LrItem tmpItem;
+	LrState I0;//创建一个I0
+		I0.Number = 0;//设置编号
+		LrItem tmpItem;//设置一个新的Item(因为增广文法只有一个产生式)
 		tmpItem.left = pro0.left;
-		for (int i = 0; i < pro0.right[0].size(); i++) {
+		for (int i = 0; i < pro0.right[0].size(); i++) {/*因为pro0和Item的数据结构不同，需要把pro0的产生部分整个string分成字母*/
 			string str;
 			stringstream stream;
 			stream << pro0.right[0][i];
@@ -246,13 +246,13 @@ LR1::LR1(producer pro0)
 			tmpItem.right.push_back(str);
 		}
 		//tmpItem.right = pro0.right;
-		tmpItem.dotpos = 0;
-		tmpItem.predict.push_back("#");
-		I0.items.push_back(tmpItem);
-	I0=adjust(I0);
-	AllStates.push_back(I0);
+		tmpItem.dotpos = 0;//点的位置
+		tmpItem.predict.push_back("#");//预测符初始化
+		I0.items.push_back(tmpItem);//Item加入state
+	I0=adjust(I0);//对增广文法进行扩展
+	AllStates.push_back(I0);//加入项级族
 }
-bool ItemExistance(LrState state,LrItem item) {
+bool ItemExistance(LrState state,LrItem item) {/*判断state中是否已经有比item更多预测符或者相同的项*/
 	for (int i = 0; i < state.items.size(); i++) {
 		if (item <= state.items[i]) {
 			return true;
@@ -260,7 +260,7 @@ bool ItemExistance(LrState state,LrItem item) {
 	}
 	return false;
 }
-bool ifeleexist(vector<string> tmpvector, string tmpstring) {
+bool ifeleexist(vector<string> tmpvector, string tmpstring) {/*判断tmpstring是否已经在tmpvector中，用于添加预测符*/
 	for (int i = 0; i < tmpvector.size(); i++) {
 		if (tmpvector[i] == tmpstring) {
 			return true;
@@ -271,15 +271,15 @@ bool ifeleexist(vector<string> tmpvector, string tmpstring) {
 LrState LR1::adjust(LrState tmpState)
 {
 //	bool findSameItem = false;
-		for (int i = 0; i < tmpState.items.size(); i++) {
-			if (tmpState.items[i].dotpos<tmpState.items[i].right.size()&&!ifTerminals(tmpState.items[i].right[tmpState.items[i].dotpos])) {//如果后面的是非终结
-				for (int j = 0; j < pro.size(); j++) {
+		for (int i = 0; i < tmpState.items.size(); i++) {/*对项中每一个Item进行遍历扩展*/
+			if (tmpState.items[i].dotpos<tmpState.items[i].right.size()&&!ifTerminals(tmpState.items[i].right[tmpState.items[i].dotpos])) {//如果点不在最后且后面的是非终结
+				for (int j = 0; j < pro.size(); j++) {/*遍历pro中每一个产生式，如果有当前非终结符对应的产生式*/
 					if (pro[j].left == tmpState.items[i].right[tmpState.items[i].dotpos] ) {//如果是该非终结符产生的生成式
-						for (int counter = 0; counter < pro[j].right.size(); counter++) {
+						for (int counter = 0; counter < pro[j].right.size(); counter++) {/*对pro中一个项对应的产生式左边，遍历产生式右边。(因为producer的数据结构和item不同)*/
 							LrItem tmpItem;
 							tmpItem.dotpos = 0;
 							tmpItem.left = pro[j].left;
-							for (int k = 0; k < pro[j].right[counter].size();k++) {
+							for (int k = 0; k < pro[j].right[counter].size();k++) {/*pro右边和Item右边的转换*/
 								if (pro[j].right[counter] == "ID")
 								{
 									tmpItem.right.push_back(pro[j].right[counter]);
@@ -297,7 +297,9 @@ LrState LR1::adjust(LrState tmpState)
 									tmpItem.right.push_back(str);
 								}
 							}
-							if (tmpState.items[i].dotpos == tmpState.items[i].right.size() - 1&&!ifTerminals( tmpState.items[i].right[tmpState.items[i].dotpos])) {
+							if (tmpState.items[i].dotpos == tmpState.items[i].right.size() - 1&&!ifTerminals( tmpState.items[i].right[tmpState.items[i].dotpos])) {/*如果点
+																																								   在非终结符之前，并且该非终结符是最后一个符号，那么
+																																								   把这个产生式的预测符加入扩展出来的产生式的预测符集合*/
 								for (int k = 0; k < tmpState.items[i].predict.size(); k++) {
 									tmpItem.predict.push_back(tmpState.items[i].predict[k]);
 								}
@@ -328,7 +330,7 @@ LrState LR1::adjust(LrState tmpState)
 			}
 		}
 		cout << "Done!" << endl;
-		for (int j = tmpState.items.size() - 1; j >= 0; j--) {/*检查是否已有该产生式的Item*/
+		for (int j = tmpState.items.size() - 1; j >= 0; j--) {/*合并产生式相同的Item*/
 					for (int k = 0; k < j; k++) {
 						if (tmpState.items[k].left == tmpState.items[j].left&&tmpState.items[k].right == tmpState.items[j].right&&tmpState.items[k].dotpos == tmpState.items[j].dotpos) {//如果已有
 							tmpState = addpredict(tmpState, k, j);//如果两者预测符不同，后面的加到已有的。
@@ -337,7 +339,7 @@ LrState LR1::adjust(LrState tmpState)
 						}
 					}
 				}
-		for (int i = 0; i < tmpState.items.size(); i++) {/*寻找出边*/
+		for (int i = 0; i < tmpState.items.size(); i++) {/*把可以出的边加入到outeredge*/
 			if (tmpState.items[i].dotpos != tmpState.items[i].right.size()) {//点不在item最后
 				bool outedgeexist = false;
 				for (int j = 0; j < tmpState.outedge.size(); j++) {
@@ -354,13 +356,13 @@ LrState LR1::adjust(LrState tmpState)
 	return tmpState;
 }
 
-LrState LR1::addpredict(LrState tmpState,int k,int j) {//k是原有的式子的下标
+LrState LR1::addpredict(LrState tmpState,int k,int j) {//合并到预测符。k是原有的式子的下标
 	int a = tmpState.items[j].predict.size();
 	int b= tmpState.items[k].predict.size();
 	bool findpre=false;
 	for (int newpre = 0; newpre <a; newpre++) {
 		for (int oldpre = 0; oldpre < b; oldpre++) {
-			if (tmpState.items[k].predict[oldpre] == tmpState.items[j].predict[newpre]) {
+			if (tmpState.items[k].predict[oldpre] == tmpState.items[j].predict[newpre]) {/*找到了就结束*/
 				findpre = true;
 				break;
 			}
@@ -381,7 +383,7 @@ LrState LR1::createNewState(int transferform, string edge) {
 	LrState tmpState;
 	tmpState = AllStates[transferform];
 	tmpState.edges.clear();
-	for (int i = tmpState.items.size() - 1; i >= 0; i--) {/*去掉不是这个路径的非终结符*/
+	for (int i = tmpState.items.size() - 1; i >= 0; i--) {/*去掉不是这个路径的非终结符。必须从后往前。*/
 		if (tmpState.items[i].dotpos < tmpState.items[i].right.size()) {
 			if (tmpState.items[i].right[tmpState.items[i].dotpos] != edge) {
 				tmpState.items.erase(tmpState.items.begin() + i);
@@ -402,23 +404,23 @@ LrState LR1::createNewState(int transferform, string edge) {
 	return tmpState;
 }
 vector<LrState> LR1::createLR1() {
-	for (int i = 0; i < AllStates.size(); i++) {
-		for (int j = 0; j < AllStates[i].outedge.size(); j++) {
+	for (int i = 0; i < AllStates.size(); i++) {//按序号扩展
+		for (int j = 0; j < AllStates[i].outedge.size(); j++) {//遍历当前序号可以出的边
 			LrState tmpState;
 			tmpState = createNewState(i,AllStates[i].outedge[j]);
-			if (ifStateExistant(tmpState)==-1) {
+			if (ifStateExistant(tmpState)==-1) {//如果生成的状态不存在，加入到AllStates
 				tmpState.Number = AllStates.size();
 				AllStates[i].edges.push_back(pair<string, int>(AllStates[i].outedge[j], tmpState.Number));
 				AllStates.push_back(tmpState);
 			}
-			else {
+			else {//如果状态存在，那么被生成的State的边指向已存在的State
 				AllStates[i].edges.push_back(pair<string, int>(AllStates[i].outedge[j], ifStateExistant(tmpState)));
 			}
 		}
 	}
 	return AllStates;
 }
-int LR1::ifStateExistant(LrState newState) {
+int LR1::ifStateExistant(LrState newState) {/*判断该状态是否存在*/
 	for (int i = 0; i < AllStates.size(); i++) {
 		if (newState == AllStates[i]) {
 			return i;
@@ -427,7 +429,7 @@ int LR1::ifStateExistant(LrState newState) {
 	}
 	return -1;
 }
-bool LR1::ifTerminals(string a)
+bool LR1::ifTerminals(string a)/*判断是否终结符*/
 {
 	if (terminals.find("a") == terminals.end())
 		return false;
@@ -441,7 +443,9 @@ bool LR1::ifTerminals(string a)
 int main()
 {
 	readFile();
-	First("(T");
+	//First("(T");
 	LR1 newlr1(pro[0]);
-	LALR newlalr(newlr1.createLR1());
+	vector<LrState>LR1States = newlr1.createLR1();
+	LALR newlalr(LR1States);
+	vector<LrState>LALRStates = newlalr.getAllState();
 }
