@@ -64,6 +64,16 @@ LALR::LALR(vector<LrState>LR1States) {
 			}
 		}
 	}
+	for (int i = 0; i < AllState.size(); i++) {
+		for(int j=AllState[i].edges.size()-1;j>=0;j--){
+			for (int l = 0; l < j; l++) {
+				if (AllState[i].edges[j] == AllState[i].edges[l]) {
+					AllState[i].edges.erase(AllState[i].edges.begin() + j);
+					break;
+				}
+			}
+		}
+	}
 	for (int i = 0; i < AllState.size(); i++) {/*ÉèÖÃ±àºÅ*/
 		AllState[i].Number = i;
 	}
