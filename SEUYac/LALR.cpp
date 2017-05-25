@@ -19,21 +19,21 @@ vector<LrState>addedge(vector<LrState> states, int i, vector<pair<string, int>>e
 }
 vector<LrState>addpre(vector<LrState> states, int i, LrState state) {/*将相同state的预测符合并*/
 	for (int j = 0; j < state.items.size(); j++) {
-			for (int l = 0; l < states[i].items.size(); l++) {
-				if (ifLrItemEqual(states[i].items[l], state.items[j])) {
-					for (int k = 0; k < state.items[j].predict.size(); k++) {
-						bool ifpredictexist = false;
-						for (int m = 0; m < states[i].items[l].predict.size(); m++) {
-							if (states[i].items[l].predict[m] == state.items[j].predict[k]) {
-								ifpredictexist = true;
-								break;
-							}
-						}
-						if (!ifpredictexist) {
-							states[i].items[l].predict.push_back(state.items[j].predict[k]);
+		for (int l = 0; l < states[i].items.size(); l++) {
+			if (ifLrItemEqual(states[i].items[l], state.items[j])) {
+				for (int k = 0; k < state.items[j].predict.size(); k++) {
+					bool ifpredictexist = false;
+					for (int m = 0; m < states[i].items[l].predict.size(); m++) {
+						if (states[i].items[l].predict[m] == state.items[j].predict[k]) {
+							ifpredictexist = true;
+							break;
 						}
 					}
+					if (!ifpredictexist) {
+						states[i].items[l].predict.push_back(state.items[j].predict[k]);
+					}
 				}
+			}
 		}
 	}
 	return states;
@@ -43,11 +43,11 @@ LALR::LALR(vector<LrState>LR1States) {
 		vector<int>element;//当前LALR边对应的LR1State集合
 		element.push_back(LR1States[i].Number);
 		AllState.push_back(LR1States[i]);
-		for (int j = i+1; j < LR1States.size(); j++) {//遍历其他LR1States
-			if (ifLRStateEqual(LR1States[i] , LR1States[j])) {/*如果有State和当前State相同，把它的出边和预测符加入当前state，并且删掉这个state*/
+		for (int j = i + 1; j < LR1States.size(); j++) {//遍历其他LR1States
+			if (ifLRStateEqual(LR1States[i], LR1States[j])) {/*如果有State和当前State相同，把它的出边和预测符加入当前state，并且删掉这个state*/
 				element.push_back(LR1States[j].Number);
-				AllState=addedge(AllState,i, LR1States[j].edges);
-				AllState=addpre(AllState, i, LR1States[j]);
+				AllState = addedge(AllState, i, LR1States[j].edges);
+				AllState = addpre(AllState, i, LR1States[j]);
 				LR1States.erase(LR1States.begin() + j);
 			}
 		}
@@ -59,13 +59,13 @@ LALR::LALR(vector<LrState>LR1States) {
 				for (int l = 0; l < StateSet[k].size(); l++) {
 					if (AllState[i].edges[j].second == StateSet[k][l]) {
 						AllState[i].edges[j].second = k;
-				}
+					}
 				}
 			}
 		}
 	}
 	for (int i = 0; i < AllState.size(); i++) {
-		for(int j=AllState[i].edges.size()-1;j>=0;j--){
+		for (int j = AllState[i].edges.size() - 1; j >= 0; j--) {
 			for (int l = 0; l < j; l++) {
 				if (AllState[i].edges[j] == AllState[i].edges[l]) {
 					AllState[i].edges.erase(AllState[i].edges.begin() + j);
@@ -98,7 +98,7 @@ bool ifLRStateEqual(LrState state1, LrState state2) {/*判断两个State是否除了预测
 		for (int i = 0; i < state1.items.size(); i++) {/*判断items*/
 			bool ifitemssequal = false;
 			for (int j = 0; j < state2.items.size(); j++) {
-				if (ifLrItemEqual( state1.items[i] ,state2.items[j]) ){
+				if (ifLrItemEqual(state1.items[i], state2.items[j])) {
 					ifitemssequal = true;
 					break;
 				}
